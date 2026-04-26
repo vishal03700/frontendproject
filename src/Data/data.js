@@ -7,12 +7,12 @@ export const userMenu = [
   {
     name: "Appointments",
     path: "/appointments",
-    icon: "fa-solid fa-list",
+    icon: "fa-solid fa-calendar-check",
   },
   {
     name: "Apply Doctor",
     path: "/apply-doctor",
-    icon: "fa-solid fa-user-doctor",
+    icon: "fa-solid fa-user-md",
   },
   {
     name: "Profile",
@@ -32,12 +32,12 @@ export const adminMenu = [
   {
     name: "Doctors",
     path: "/admin/doctors",
-    icon: "fa-solid fa-user-doctor",
+    icon: "fa-solid fa-stethoscope",
   },
   {
     name: "Users",
     path: "/admin/users",
-    icon: "fa-solid fa-user",
+    icon: "fa-solid fa-users",
   },
   {
     name: "Profile",

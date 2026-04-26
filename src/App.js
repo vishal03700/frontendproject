@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -14,8 +15,11 @@ import Profile from "./pages/doctor/Profile";
 import BookingPage from "./pages/BookingPage";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
+import PatientProfile from "./pages/PatientProfile";
+
 function App() {
   const { loading } = useSelector((state) => state.alerts);
+
   return (
     <>
       <BrowserRouter>
@@ -23,6 +27,41 @@ function App() {
           <Spinner />
         ) : (
           <Routes>
+            {/* Public Routes - Accessible to everyone */}
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <LandingPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              }
+            />
+            
+            {/* Protected Routes - Require authentication */}
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/apply-doctor"
               element={
@@ -72,22 +111,6 @@ function App() {
               }
             />
             <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              }
-            />
-            <Route
               path="/appointments"
               element={
                 <ProtectedRoute>
@@ -104,10 +127,10 @@ function App() {
               }
             />
             <Route
-              path="/"
+              path="/profile"
               element={
                 <ProtectedRoute>
-                  <HomePage />
+                  <PatientProfile />
                 </ProtectedRoute>
               }
             />

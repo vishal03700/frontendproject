@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "proxy": "https://backendproject-zca0.onrender.com",
+  "proxy": "http://localhost:10000/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,6 +22,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

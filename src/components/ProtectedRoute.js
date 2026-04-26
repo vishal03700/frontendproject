@@ -9,14 +9,13 @@ export default function ProtectedRoute({ children }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
 
-  //get user
-  //eslint-disable-next-line
+  // get user
   const getUser = async () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
         "/api/v1/user/getUserData",
-        { token: localStorage.getItem("token") },
+        {},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -28,12 +27,13 @@ export default function ProtectedRoute({ children }) {
         dispatch(setUser(res.data.data));
       } else {
         localStorage.clear();
-        <Navigate to="/login" />;
+        window.location.href = "/login";
       }
     } catch (error) {
       localStorage.clear();
       dispatch(hideLoading());
       console.log(error);
+      window.location.href = "/login";
     }
   };
 
@@ -41,7 +41,7 @@ export default function ProtectedRoute({ children }) {
     if (!user) {
       getUser();
     }
-  }, [user, getUser]);
+  }, [user]);
 
   if (localStorage.getItem("token")) {
     return children;

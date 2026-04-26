@@ -1,11 +1,360 @@
+/* VisionCare Scheduler - Auth Pages Styles */
+/* Modern Indian Healthcare Design */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff8f3 0%, #f8f9fa 50%, #f0f7f7 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Background Shapes */
+.auth-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.bg-shape-1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(244, 162, 97, 0.1) 100%);
+  top: -150px;
+  right: -100px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.bg-shape-2 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(42, 157, 143, 0.12) 0%, rgba(69, 123, 157, 0.08) 100%);
+  bottom: -100px;
+  left: -80px;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.bg-shape-3 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(255, 107, 53, 0.08) 100%);
+  top: 40%;
+  left: 10%;
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* Auth Container */
+.auth-container {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* Auth Card */
+.auth-card {
+  flex: 1;
+  padding: 48px;
+  max-width: 480px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.auth-logo {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ff6b35 0%, #f4a261 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.35);
+}
+
+.auth-logo i {
+  color: white;
+  font-size: 2rem;
+}
+
+.auth-header h2 {
+  margin: 0 0 8px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.auth-header p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+/* Form Styles */
+.register-form {
+  margin-top: 20px;
+}
+
+.register-form .ant-form-item-label > label {
+  font-weight: 500;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.register-form .ant-input,
+.register-form .ant-input-affix-wrapper {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.register-form .ant-input:focus,
+.register-form .ant-input-affix-wrapper:focus,
+.register-form .ant-input-affix-wrapper-focused {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.register-form .ant-input-prefix {
+  margin-right: 12px;
+  color: #adb5bd;
+}
+
+.register-form .ant-input-prefix i {
+  font-size: 1rem;
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.remember-me input {
+  width: 16px;
+  height: 16px;
+  accent-color: #ff6b35;
+}
+
+.forgot-link {
+  font-size: 0.9rem;
+  color: #ff6b35;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  color: #e55a2b;
+  text-decoration: underline;
+}
+
+/* Auth Button */
+.auth-btn {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-btn i {
+  transition: transform 0.3s ease;
+}
+
+.auth-btn:hover i {
+  transform: translateX(4px);
+}
+
+/* Auth Footer */
+.auth-footer {
+  text-align: center;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+}
+
+.auth-footer p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.auth-footer a {
+  color: #ff6b35;
+  font-weight: 600;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Auth Info Side */
+.auth-info {
+  flex: 1;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-info::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.2) 0%, transparent 70%);
+}
+
+.auth-info h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: white;
+}
+
+.auth-info > p {
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.85;
+  margin: 0 0 40px;
+}
+
+.features-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(8px);
+}
+
+.feature-item i {
+  font-size: 1.3rem;
+  color: #ff6b35;
+  width: 24px;
+  text-align: center;
+}
+
+.feature-item span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+  }
+  
+  .auth-card {
+    padding: 36px 24px;
+  }
+  
+  .auth-info {
+    padding: 36px 24px;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 12px;
+  }
+  
+  .auth-card {
+    padding: 28px 20px;
+  }
+  
+  .auth-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+  
+  .auth-logo i {
+    font-size: 1.6rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Legacy Form Container */
 .form-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .register-form {
-  border: 1px solid gray;
+  border: 1px solid #e9ecef;
   padding: 30px;
+  border-radius: 16px;
+  background: white;
 }
