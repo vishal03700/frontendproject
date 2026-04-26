@@ -1,37 +1,32 @@
 import React, { useState } from "react";
-import "../styles/RegiserStyles.css";
+import "./Auth.css";
 import { Form, Input, message } from "antd";
-import { useDispatch } from "react-redux";
-import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { authApi } from "../api/client";
+import { usePageLoader } from "../hooks/usePageLoader";
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const { withPageLoader } = usePageLoader();
 
-  // form handler
   const onfinishHandler = async (values) => {
+    setLoading(true);
+
     try {
-      setLoading(true);
-      dispatch(showLoading());
-      const res = await axios.post("/api/v1/user/login", values);
-      dispatch(hideLoading());
-      setLoading(false);
+      const response = await withPageLoader(() => authApi.login(values));
       
-      if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
+      if (response.success) {
+        localStorage.setItem("token", response.token);
         message.success("Welcome back! Login successful");
-        navigate("/");
+        navigate("/home");
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
-      dispatch(hideLoading());
+      message.error(error.message || "Invalid credentials. Please try again.");
+    } finally {
       setLoading(false);
-      console.log(error);
-      message.error("Invalid credentials. Please try again.");
     }
   };
 

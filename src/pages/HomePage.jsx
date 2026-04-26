@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Layout from "./../components/Layout";
-import { Row, Col, Card, Button, Empty } from "antd";
+import { Row, Col, Card, Button, Empty, message } from "antd";
 import { 
   CalendarOutlined, 
   TeamOutlined, 
@@ -11,36 +10,30 @@ import {
 } from "@ant-design/icons";
 import DoctorList from "../components/DoctorList";
 import { useNavigate } from "react-router-dom";
+import { userApi } from "../api/client";
 
 const HomePage = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // login user data
-  const getUserData = async () => {
+  const getDoctors = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        "/api/v1/user/getAllDoctors",
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      if (res.data.success) {
-        setDoctors(res.data.data);
+      const response = await userApi.getAllDoctors();
+
+      if (response.success) {
+        setDoctors(response.data);
       }
     } catch (error) {
-      console.log(error);
+      message.error(error.message || "Failed to load doctors");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    getUserData();
+    getDoctors();
   }, []);
 
   // Feature cards data

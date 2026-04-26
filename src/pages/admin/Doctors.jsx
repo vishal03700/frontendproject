@@ -1,44 +1,33 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./../../components/Layout";
-import axios from "axios";
 import { message, Table } from "antd";
+import { adminApi } from "../../api/client";
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
-  //getUsers
+
   const getDoctors = async () => {
     try {
-      const res = await axios.get("/api/v1/admin/getAllDoctors", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (res.data.success) {
-        setDoctors(res.data.data);
+      const response = await adminApi.getDoctors();
+
+      if (response.success) {
+        setDoctors(response.data);
       }
     } catch (error) {
-      console.log(error);
+      message.error(error.message || "Failed to load doctors");
     }
   };
 
-  // handle account
   const handleAccountStatus = async (record, status) => {
     try {
-      const res = await axios.post(
-        "/api/v1/admin/changeAccountStatus",
-        { doctorId: record._id, status: status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (res.data.success) {
-        message.success(res.data.message);
-        window.location.reload();
+      const response = await adminApi.changeDoctorAccountStatus(record._id, status);
+
+      if (response.success) {
+        message.success(response.message);
+        getDoctors();
       }
     } catch (error) {
-      message.error("Something Went Wrong");
+      message.error(error.message || "Something went wrong");
     }
   };
 
@@ -87,7 +76,7 @@ const Doctors = () => {
   return (
     <Layout>
       <h1 className="text-center m-3">All Doctors</h1>
-      <Table columns={columns} dataSource={doctors} />
+      <Table columns={columns} dataSource={doctors} rowKey="_id" />
     </Layout>
   );
 };

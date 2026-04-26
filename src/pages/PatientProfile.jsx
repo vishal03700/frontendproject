@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
-import axios from "axios";
 import { 
   Form, 
   Input, 
@@ -10,9 +9,7 @@ import {
   Upload, 
   message,
   Row, 
-  Col,
-  Divider,
-  UploadProps
+  Col
 } from "antd";
 import { 
   UserOutlined, 
@@ -26,18 +23,17 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { setUser } from "../redux/features/userSlice";
-import { useNavigate } from "react-router-dom";
+import { uploadEndpoints, userApi } from "../api/client";
+import { getInitials } from "../utils/formatters";
 
 const PatientProfile = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Initialize form with user data
   useEffect(() => {
     if (user) {
       form.setFieldsValue({
@@ -50,58 +46,39 @@ const PatientProfile = () => {
     }
   }, [user, form]);
 
-  // Handle form submission
   const handleFinish = async (values) => {
+    dispatch(showLoading());
+    setLoading(true);
+
     try {
-      setLoading(true);
-      dispatch(showLoading());
-      
-      const res = await axios.post(
-        "/api/v1/user/updateProfile",
-        {
+      const response = await userApi.updateProfile({
           userId: user._id,
           ...values,
           profilePicture: profileImage,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      
-      dispatch(hideLoading());
-      
-      if (res.data.success) {
+        });
+
+      if (response.success) {
         message.success("Profile updated successfully!");
         dispatch(setUser({ ...user, ...values, profilePicture: profileImage }));
         setIsEditing(false);
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
-      dispatch(hideLoading());
-      console.log(error);
-      message.error("Failed to update profile");
+      message.error(error.message || "Failed to update profile");
     } finally {
+      dispatch(hideLoading());
       setLoading(false);
     }
   };
 
-  // Handle image upload
   const handleImageUpload = (info) => {
-    if (info.file.status === 'done') {
+    if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
       setProfileImage(info.file.response?.url || info.file.name);
-    } else if (info.file.status === 'error') {
+    } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed`);
     }
-  };
-
-  // Get user initials for avatar
-  const getUserInitials = (name) => {
-    if (!name) return "U";
-    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
   };
 
   return (
@@ -126,15 +103,13 @@ const PatientProfile = () => {
                     fontWeight: 600
                   }}
                 >
-                  {getUserInitials(user?.name)}
+                  {getInitials(user?.name)}
                 </Avatar>
                 {isEditing && (
                   <Upload
                     showUploadList={false}
-                    action="/api/v1/user/upload-profile"
-                    headers={{
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    }}
+                    action={uploadEndpoints.userProfile}
+                    headers={{ Authorization: `Bearer ${localStorage.getItem("token")}` }}
                     onChange={handleImageUpload}
                   >
                     <div className="avatar-overlay">

@@ -1,36 +1,31 @@
 import React, { useState } from "react";
-import "../styles/RegiserStyles.css";
+import "./Auth.css";
 import { Form, Input, message } from "antd";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { authApi } from "../api/client";
+import { usePageLoader } from "../hooks/usePageLoader";
 
 const Register = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const { withPageLoader } = usePageLoader();
 
-  // form handler
   const onfinishHandler = async (values) => {
+    setLoading(true);
+
     try {
-      setLoading(true);
-      dispatch(showLoading());
-      const res = await axios.post("/api/v1/user/register", values);
-      dispatch(hideLoading());
-      setLoading(false);
+      const response = await withPageLoader(() => authApi.register(values));
       
-      if (res.data.success) {
+      if (response.success) {
         message.success("Account created successfully!");
         navigate("/login");
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
-      dispatch(hideLoading());
+      message.error(error.message || "Unable to create account. Please try again.");
+    } finally {
       setLoading(false);
-      console.log(error);
-      message.error("Unable to create account. Please try again.");
     }
   };
 

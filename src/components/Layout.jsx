@@ -1,29 +1,28 @@
 import React from "react";
-import "../styles/LayoutStyles.css";
-import { adminMenu, userMenu } from "./../Data/data";
-
+import "./Layout.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Badge, message, Avatar } from "antd";
 import { BellOutlined } from "@ant-design/icons";
+import { clearSession } from "../utils/auth";
+import { getInitials } from "../utils/formatters";
+import { adminMenu, userMenu } from "../utils/navigation";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // logout function
   const handleLogout = () => {
-    localStorage.clear();
+    clearSession();
     message.success("Logged out successfully");
     navigate("/login");
   };
 
-  // =========== doctor menu ===============
   const doctorMenu = [
     {
       name: "Home",
-      path: "/",
+      path: "/home",
       icon: "fa-solid fa-house",
     },
     {
@@ -37,20 +36,16 @@ const Layout = ({ children }) => {
       icon: "fa-solid fa-user-doctor",
     },
   ];
-  // =========== doctor menu ===============
 
-  // rendering menu list
   const SidebarMenu = user?.isAdmin
     ? adminMenu
     : user?.isDoctor
     ? doctorMenu
     : userMenu;
 
-  // Get user initials for avatar
-  const getUserInitials = (name) => {
-    if (!name) return "U";
-    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-  };
+  const profilePath = user?.isDoctor ? `/doctor/profile/${user?._id}` : "/profile";
+  const userName = user?.name || `${user?.firstName || ""} ${user?.lastName || ""}`.trim();
+  const firstName = userName.split(" ")[0] || "User";
 
   return (
     <div className="main">
@@ -95,9 +90,9 @@ const Layout = ({ children }) => {
                   fontWeight: 600
                 }}
               >
-                {getUserInitials(user?.name)}
+                {getInitials(userName)}
               </Avatar>
-              <span className="user-name-mini">{user?.name?.split(' ')[0]}</span>
+              <span className="user-name-mini">{firstName}</span>
             </div>
           </div>
         </div>
@@ -127,7 +122,7 @@ const Layout = ({ children }) => {
 
               <div 
                 className="user-profile-btn"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate(profilePath)}
               >
                 <Avatar 
                   size={36}
@@ -136,9 +131,9 @@ const Layout = ({ children }) => {
                     fontWeight: 600
                   }}
                 >
-                  {getUserInitials(user?.name)}
+                  {getInitials(userName)}
                 </Avatar>
-                <span className="user-name">{user?.name}</span>
+                <span className="user-name">{userName}</span>
                 <i className="fa-solid fa-chevron-down"></i>
               </div>
             </div>

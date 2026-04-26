@@ -1,39 +1,32 @@
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+import { userApi } from "../api/client";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import { setUser } from "../redux/features/userSlice";
+import { clearSession, isAuthenticated } from "../utils/auth";
 
 export default function ProtectedRoute({ children }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
 
-  // get user
   const getUser = async () => {
+    dispatch(showLoading());
+
     try {
-      dispatch(showLoading());
-      const res = await axios.post(
-        "/api/v1/user/getUserData",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
-        dispatch(setUser(res.data.data));
+      const response = await userApi.getCurrentUser();
+
+      if (response.success) {
+        dispatch(setUser(response.data));
       } else {
-        localStorage.clear();
+        clearSession();
         window.location.href = "/login";
       }
     } catch (error) {
-      localStorage.clear();
-      dispatch(hideLoading());
-      console.log(error);
+      clearSession();
       window.location.href = "/login";
+    } finally {
+      dispatch(hideLoading());
     }
   };
 
@@ -41,11 +34,11 @@ export default function ProtectedRoute({ children }) {
     if (!user) {
       getUser();
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (localStorage.getItem("token")) {
+  if (isAuthenticated()) {
     return children;
-  } else {
-    return <Navigate to="/login" />;
   }
+
+  return <Navigate to="/login" />;
 }

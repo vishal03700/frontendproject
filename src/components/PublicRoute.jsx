@@ -1,11 +1,11 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
 export default function PublicRoute({ children }) {
-  if (localStorage.getItem("token")) {
-    // Redirect authenticated users to the dashboard
+  if (isAuthenticated()) {
     return <Navigate to="/home" />;
-  } else {
-    return children;
   }
+
+  return children;
 }

@@ -14,8 +14,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { setUser } from "../redux/features/userSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import moment from "moment";
+import { userApi } from "../api/client";
+import { formatNotificationTime } from "../utils/formatters";
 
 const NotificationPage = () => {
   const dispatch = useDispatch();
@@ -27,21 +27,13 @@ const NotificationPage = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(
-        "/api/v1/user/getUserData",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (res.data.success) {
-        dispatch(setUser(res.data.data));
+      const response = await userApi.getNotifications();
+
+      if (response.success) {
+        dispatch(setUser(response.data));
       }
     } catch (error) {
-      console.log(error);
-      message.error("Failed to fetch notifications");
+      message.error(error.message || "Failed to fetch notifications");
     } finally {
       setLoading(false);
     }
@@ -53,52 +45,40 @@ const NotificationPage = () => {
   }, []);
 
   const handleMarkAllRead = async () => {
+    dispatch(showLoading());
+
     try {
-      dispatch(showLoading());
-      const res = await axios.post(
-        "/api/v1/user/get-all-notification",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
+      const response = await userApi.markAllNotificationsRead();
+
+      if (response.success) {
         message.success("All notifications marked as read");
         fetchNotifications();
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
+      message.error(error.message || "Something went wrong");
+    } finally {
       dispatch(hideLoading());
-      message.error("Something went wrong");
     }
   };
 
   const handleDeleteAllRead = async () => {
+    dispatch(showLoading());
+
     try {
-      dispatch(showLoading());
-      const res = await axios.post(
-        "/api/v1/user/delete-all-notification",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
+      const response = await userApi.deleteAllNotifications();
+
+      if (response.success) {
         message.success("All read notifications deleted");
         fetchNotifications();
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
+      message.error(error.message || "Something went wrong");
+    } finally {
       dispatch(hideLoading());
-      message.error("Something went wrong");
     }
   };
 
@@ -116,20 +96,6 @@ const NotificationPage = () => {
     if (lower.includes("rejected") || lower.includes("declined")) return "#e63946";
     if (lower.includes("appointment") || lower.includes("booked")) return "#ff6b35";
     return "#457b9d";
-  };
-
-  // Format the real timestamp from the notification object
-  const formatTime = (notification) => {
-    // Try common timestamp fields your backend might store
-    const ts = notification.createdAt || notification.timestamp || notification.time;
-    if (!ts) return "Just now";
-    const m = moment(ts);
-    if (!m.isValid()) return "Just now";
-    // Show relative time if within 24 hrs, else full date
-    if (moment().diff(m, "hours") < 24) {
-      return m.fromNow(); // e.g. "2 hours ago"
-    }
-    return m.format("DD MMM YYYY, hh:mm A"); // e.g. "25 Apr 2026, 09:30 AM"
   };
 
   const renderNotification = (notification, isRead) => (
@@ -151,7 +117,7 @@ const NotificationPage = () => {
         <div className="notification-text">
           <p className="notification-message">{notification.message}</p>
           <span className="notification-time">
-            <ClockCircleOutlined /> {formatTime(notification)}
+            <ClockCircleOutlined /> {formatNotificationTime(notification)}
           </span>
         </div>
         {!isRead && <Badge status="processing" />}

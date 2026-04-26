@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { DatePicker, message, TimePicker, Card, Button, Result, Spin, Empty, Avatar } from "antd";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +15,7 @@ import {
   EnvironmentOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
+import { doctorApi, userApi } from "../api/client";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
@@ -32,17 +32,10 @@ const BookingPage = () => {
   const getDoctorData = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(
-        "/api/v1/doctor/getDoctorById",
-        { doctorId: params.doctorId },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      if (res.data.success) {
-        setDoctor(res.data.data);
+      const response = await doctorApi.getDoctorById(params.doctorId);
+
+      if (response.success) {
+        setDoctor(response.data);
       } else {
         message.error("Doctor not found");
         navigate("/home");
@@ -64,36 +57,25 @@ const BookingPage = () => {
     try {
       setBookingLoading(true);
       dispatch(showLoading());
-      const res = await axios.post(
-        "/api/v1/user/book-appointment",
-        {
+      const response = await userApi.bookAppointment({
           doctorId: params.doctorId,
           userId: user._id,
           doctorInfo: doctor,
           userInfo: user,
-          date: date,
-          time: time,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
+          date,
+          time,
+        });
+
+      if (response.success) {
         setBookingSuccess(true);
         message.success("Appointment request sent!");
       } else {
-        message.error(res.data.message || "Failed to book appointment");
+        message.error(response.message || "Failed to book appointment");
       }
     } catch (error) {
-      dispatch(hideLoading());
-      console.error("Booking error:", error);
-      message.error(
-        error.response?.data?.message || "Unable to book appointment. Please try again."
-      );
+      message.error(error.message || "Unable to book appointment. Please try again.");
     } finally {
+      dispatch(hideLoading());
       setBookingLoading(false);
     }
   };

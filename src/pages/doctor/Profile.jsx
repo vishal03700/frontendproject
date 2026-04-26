@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./../../components/Layout";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { 
   Col, Form, Input, Row, TimePicker, message, 
   Card, Avatar, Button, Upload, Divider
@@ -23,6 +22,8 @@ import {
   EditOutlined,
   StarOutlined
 } from "@ant-design/icons";
+import { doctorApi, uploadEndpoints } from "../../api/client";
+import { getInitials } from "../../utils/formatters";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
@@ -31,35 +32,19 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const params = useParams();
 
-  // Get user initials for avatar
-  const getUserInitials = (name) => {
-    if (!name) return "D";
-    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-  };
-
-  // Get doctor info
   const getDoctorInfo = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(
-        "/api/v1/doctor/getDoctorInfo",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (res.data.success) {
-        setDoctor(res.data.data);
-        setProfileImage(res.data.data?.profilePicture);
+      const response = await doctorApi.getDoctorInfo();
+
+      if (response.success) {
+        setDoctor(response.data);
+        setProfileImage(response.data?.profilePicture);
       }
     } catch (error) {
-      console.log(error);
-      message.error("Failed to load doctor profile");
+      message.error(error.message || "Failed to load doctor profile");
     } finally {
       setLoading(false);
     }
@@ -69,47 +54,38 @@ const Profile = () => {
     getDoctorInfo();
   }, [params.id]);
 
-  // Handle form submission
   const handleFinish = async (values) => {
+    dispatch(showLoading());
+
     try {
-      dispatch(showLoading());
-      const res = await axios.post(
-        "/api/v1/doctor/updateProfile",
-        {
+      const response = await doctorApi.updateProfile({
           ...values,
           profilePicture: profileImage,
           timings: [
             moment(values.timings[0]).format("HH:mm"),
             moment(values.timings[1]).format("HH:mm"),
           ],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
+        });
+
+      if (response.success) {
         message.success("Profile updated successfully!");
         setIsEditing(false);
         getDoctorInfo();
       } else {
-        message.error(res.data.message);
+        message.error(response.message);
       }
     } catch (error) {
+      message.error(error.message || "Failed to update profile");
+    } finally {
       dispatch(hideLoading());
-      console.log(error);
-      message.error("Failed to update profile");
     }
   };
 
-  // Handle image upload
   const handleImageUpload = (info) => {
-    if (info.file.status === 'done') {
+    if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
       setProfileImage(info.file.response?.url || info.file.name);
-    } else if (info.file.status === 'error') {
+    } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed`);
     }
   };
@@ -136,15 +112,13 @@ const Profile = () => {
                     fontWeight: 600
                   }}
                 >
-                  {getUserInitials(doctor?.firstName)}
+                  {getInitials(`${doctor?.firstName || ""} ${doctor?.lastName || ""}`, "D")}
                 </Avatar>
                 {isEditing && (
                   <Upload
                     showUploadList={false}
-                    action="/api/v1/user/upload-profile"
-                    headers={{
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    }}
+                    action={uploadEndpoints.userProfile}
+                    headers={{ Authorization: `Bearer ${localStorage.getItem("token")}` }}
                     onChange={handleImageUpload}
                   >
                     <div className="avatar-overlay">
