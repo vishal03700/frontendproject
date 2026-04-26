@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { 
@@ -13,37 +13,83 @@ import {
 import "./LandingPage.css";
 
 const LandingPage = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className="landing-page">
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-container">
-          <div className="nav-brand">
+          <Link to="/" className="nav-brand" aria-label="VisionCare home">
             <div className="brand-icon">
               <i className="fa-solid fa-heart-pulse"></i>
             </div>
-            <span className="brand-name">VisionCare</span>
+            <div className="brand-copy">
+              <span className="brand-name">VisionCare</span>
+              <span className="brand-tagline">Smart care scheduling</span>
+            </div>
+          </Link>
+
+          <div className="nav-right">
+            <div className="nav-links">
+              <a href="#about">About</a>
+              <a href="#features">Features</a>
+              <a href="#how-it-works">How It Works</a>
+              <a href="#contact">Contact</a>
+            </div>
+
+            <div className="nav-actions">
+              <Link to="/login">
+                <Button type="text" className="nav-login-btn">Log In</Button>
+              </Link>
+              <Link to="/register">
+                <Button className="nav-signup-btn">Get Started</Button>
+              </Link>
+            </div>
           </div>
-          
-          <div className="nav-links">
-            <a href="#about">About</a>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#contact">Contact</a>
-          </div>
-          
-          <div className="nav-actions">
-            <Link to="/login">
-              <Button type="text" className="nav-login-btn">Log In</Button>
-            </Link>
-            <Link to="/register">
-              <Button className="nav-signup-btn">Get Started</Button>
-            </Link>
-          </div>
-          
-          <button className="mobile-menu-btn">
-            <i className="fa-solid fa-bars"></i>
+
+          <button
+            className={`mobile-menu-btn ${isMobileMenuOpen ? "active" : ""}`}
+            type="button"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen((current) => !current)}
+          >
+            <i className={`fa-solid ${isMobileMenuOpen ? "fa-xmark" : "fa-bars"}`}></i>
           </button>
+        </div>
+
+        <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
+          <div className="mobile-menu-links">
+            <a href="#about" onClick={closeMobileMenu}>About</a>
+            <a href="#features" onClick={closeMobileMenu}>Features</a>
+            <a href="#how-it-works" onClick={closeMobileMenu}>How It Works</a>
+            <a href="#contact" onClick={closeMobileMenu}>Contact</a>
+          </div>
+          <div className="mobile-menu-actions">
+            <Link to="/login" onClick={closeMobileMenu}>
+              <Button type="text" className="nav-login-btn mobile-login-btn">Log In</Button>
+            </Link>
+            <Link to="/register" onClick={closeMobileMenu}>
+              <Button className="nav-signup-btn mobile-signup-btn">Get Started</Button>
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -376,8 +422,8 @@ const LandingPage = () => {
             
             <div className="footer-links">
               <h4>Contact</h4>
-              <a href="mailto:support@visioncare.com"><i className="fa-solid fa-envelope"></i> support@visioncare.com</a>
-              <a href="tel:+911234567890"><i className="fa-solid fa-phone"></i> +91 12345 67890</a>
+              <a href="mailto:vishal01400@gmail.com"><i className="fa-solid fa-envelope"></i> support@visioncare.com</a>
+              <a href="tel:+911234567890"><i className="fa-solid fa-phone"></i> +91 8303520072</a>
               <span><i className="fa-solid fa-location-dot"></i> India</span>
             </div>
           </div>

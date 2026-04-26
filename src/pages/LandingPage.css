@@ -45,75 +45,116 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(26, 26, 46, 0.06);
+  box-shadow: 0 10px 30px rgba(26, 26, 46, 0.06);
 }
 
 .nav-container {
   max-width: 1280px;
   margin: 0 auto;
+  min-height: 88px;
   padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 32px;
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  flex-shrink: 0;
+  text-decoration: none;
+  margin-right: auto;
 }
 
 .brand-icon {
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   background: linear-gradient(135deg, var(--primary-saffron) 0%, #f4a261 100%);
-  border-radius: 12px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 14px 30px rgba(255, 107, 53, 0.24);
+  padding: 8px;
 }
 
 .brand-icon i {
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.55rem;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
 }
 
 .brand-name {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1;
   color: var(--neutral-dark);
+  letter-spacing: 0;
+}
+
+.brand-tagline {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(108, 117, 125, 0.92);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 34px;
+  flex: 1;
+  min-width: 0;
 }
 
 .nav-links {
   display: flex;
-  gap: 32px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(18px, 2vw, 34px);
+  min-width: 0;
 }
 
 .nav-links a {
-  color: var(--neutral-gray);
+  color: rgba(91, 100, 111, 0.95);
   text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: color 0.3s ease;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 10px 0;
+  transition: color 0.25s ease, transform 0.25s ease;
   position: relative;
+  white-space: nowrap;
 }
 
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: 1px;
   left: 0;
   width: 0;
   height: 2px;
   background: var(--primary-saffron);
+  border-radius: 999px;
   transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
   color: var(--primary-saffron);
+  transform: translateY(-1px);
 }
 
 .nav-links a:hover::after {
@@ -122,31 +163,67 @@
 
 .nav-actions {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .nav-login-btn {
   color: var(--neutral-dark) !important;
-  font-weight: 600;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  height: 48px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  transition: background-color 0.25s ease, color 0.25s ease !important;
+}
+
+.nav-login-btn:hover {
+  background: rgba(26, 26, 46, 0.06) !important;
+  color: var(--primary-saffron) !important;
 }
 
 .nav-signup-btn {
   background: linear-gradient(135deg, var(--primary-saffron) 0%, var(--primary-saffron-dark) 100%) !important;
   border: none !important;
   color: white !important;
-  font-weight: 600;
-  border-radius: 10px !important;
-  padding: 8px 20px !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  padding: 0 24px !important;
+  box-shadow: 0 14px 30px rgba(255, 107, 53, 0.2) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.nav-signup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px rgba(255, 107, 53, 0.26) !important;
 }
 
 .mobile-menu-btn {
   display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 107, 53, 0.08);
+  border: 1px solid rgba(255, 107, 53, 0.14);
+  font-size: 1.2rem;
   color: var(--neutral-dark);
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.mobile-menu-btn:hover,
+.mobile-menu-btn.active {
+  background: rgba(255, 107, 53, 0.14);
+  color: var(--primary-saffron-dark);
+}
+
+.mobile-menu {
+  display: none;
 }
 
 /* Hero Section */
@@ -955,16 +1032,91 @@
 }
 
 @media (max-width: 768px) {
-  .nav-links {
+  .nav-container {
+    min-height: 80px;
+    padding: 14px 20px;
+    gap: 16px;
+  }
+
+  .nav-right {
     display: none;
   }
-  
-  .nav-actions {
-    display: none;
-  }
-  
+
   .mobile-menu-btn {
-    display: block;
+    display: inline-flex;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+  }
+
+  .brand-icon i {
+    font-size: 1.3rem;
+  }
+
+  .brand-name {
+    font-size: 1.5rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.72rem;
+  }
+
+  .mobile-menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    transition: grid-template-rows 0.3s ease;
+    border-top: 1px solid rgba(26, 26, 46, 0.06);
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  .mobile-menu.open {
+    grid-template-rows: 1fr;
+  }
+
+  .mobile-menu > * {
+    overflow: hidden;
+  }
+
+  .mobile-menu-links,
+  .mobile-menu-actions {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 16px;
+  }
+
+  .mobile-menu-links a {
+    text-decoration: none;
+    color: var(--neutral-dark);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 4px;
+    border-bottom: 1px solid rgba(26, 26, 46, 0.06);
+  }
+
+  .mobile-menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 18px;
+    padding-bottom: 20px;
+  }
+
+  .mobile-login-btn,
+  .mobile-signup-btn {
+    width: 100%;
   }
   
   .hero-section {
